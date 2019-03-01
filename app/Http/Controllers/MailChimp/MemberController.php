@@ -80,4 +80,34 @@ class MemberController extends Controller
 
         return $this->successfulResponse($result);
     }
+
+    /**
+     * Update MailChimp list member.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $mailChimpId
+     * @param string $memberId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, string $mailChimpId, string $memberId): JsonResponse
+    {
+        // Validate data
+        $validator = $this->getValidationFactory()->make($request->all(), MailChimpMember::getValidationRules());
+
+        if ($validator->fails()) {
+            // Return error response if validation failed
+            return $this->errorResponse([
+                'message' => 'Invalid data given',
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+
+        try {
+            $result = $this->memberService->update($request->all(), $mailChimpId, $memberId);
+        } catch (Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()]);
+        }
+
+        return $this->successfulResponse($result);
+    }
 }

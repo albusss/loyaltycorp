@@ -86,4 +86,47 @@ class MemberService
 
         return $result;
     }
+
+    /**
+     * Update MailChimp list member.
+     *
+     * @param array $data
+     * @param string $mailChimpId
+     * @param string $memberId
+     * @return array
+     * @throws EntityNotFoundException
+     */
+    public function update(array $data, string $mailChimpId, string $memberId): array
+    {
+        /** @var \App\Database\Entities\MailChimp\MailChimpMember|null $member */
+        $member = $this->entityManager->getRepository(MailChimpMember::class)->find($memberId);
+
+        if ($member === null) {
+
+            throw new EntityNotFoundException(sprintf('MailChimpMember[%s] not found', $memberId));
+        }
+
+        $emailHash = md5(strtolower($member->getEmailAddress()));
+
+        // Update list properties
+        $member->fill($data);
+
+        $this->entityManager->persist($member);
+        $this->entityManager->flush();
+
+        // Update list member into MailChimp
+        $this
+            ->mailChimp
+                ->patch(
+                    \sprintf(
+                        'lists/%s/members/%s',
+                        $mailChimpId,
+                        $emailHash
+                    ),
+                    $member->toMailChimpArray()
+                )
+        ;
+
+        return $member->toArray();
+    }
 }
