@@ -115,7 +115,7 @@ class MailChimpList extends MailChimpEntity
      *
      * @return array
      */
-    public function getValidationRules(): array
+    public static function getValidationRules(): array
     {
         return [
             'campaign_defaults' => 'required|array',

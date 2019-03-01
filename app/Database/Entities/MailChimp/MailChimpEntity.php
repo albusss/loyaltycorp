@@ -12,7 +12,7 @@ abstract class MailChimpEntity extends Entity
      *
      * @return array
      */
-    abstract public function getValidationRules(): array;
+    abstract public static function getValidationRules(): array;
 
     /**
      * Get array representation of entity.
