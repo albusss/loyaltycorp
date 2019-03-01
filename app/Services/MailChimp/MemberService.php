@@ -129,4 +129,30 @@ class MemberService
 
         return $member->toArray();
     }
+
+    /**
+     * Remove MailChimp list member.
+     *
+     * @param string $mailChimpId
+     * @param string $memberId
+     * @throws EntityNotFoundException
+     */
+    public function remove(string $mailChimpId, string $memberId): void
+    {
+        /** @var \App\Database\Entities\MailChimp\MailChimpMember|null $member */
+        $member = $this->entityManager->getRepository(MailChimpMember::class)->find($memberId);
+
+        if ($member === null) {
+
+            throw new EntityNotFoundException(sprintf('MailChimpMember[%s] not found', $member));
+        }
+
+        $emailHash = md5(strtolower($member->getEmailAddress()));
+
+        $this->entityManager->remove($member);
+        $this->entityManager->flush();
+
+        // Remove list member from MailChimp
+        $this->mailChimp->delete(sprintf('lists/%s/members/%s', $mailChimpId, $emailHash));
+    }
 }

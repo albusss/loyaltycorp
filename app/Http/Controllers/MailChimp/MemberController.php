@@ -110,4 +110,22 @@ class MemberController extends Controller
 
         return $this->successfulResponse($result);
     }
+
+    /**
+     * Remove MailChimp list member.
+     *
+     * @param string $mailChimpId
+     * @param string $memberId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function remove(string $mailChimpId, string $memberId): JsonResponse
+    {
+        try {
+            $this->memberService->remove($mailChimpId, $memberId);
+        } catch (Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()]);
+        }
+
+        return $this->successfulResponse([]);
+    }
 }
