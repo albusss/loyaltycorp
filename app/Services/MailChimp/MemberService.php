@@ -56,7 +56,6 @@ class MemberService
         $this->entityManager->persist($list);
         $this->entityManager->flush();
 
-        // Save list into MailChimp
         $this->mailChimp->post(sprintf('lists/%s/members', $mailChimpId), $member->toMailChimpArray());
 
         return $member->toArray();
@@ -108,13 +107,11 @@ class MemberService
 
         $emailHash = md5(strtolower($member->getEmailAddress()));
 
-        // Update list properties
         $member->fill($data);
 
         $this->entityManager->persist($member);
         $this->entityManager->flush();
 
-        // Update list member into MailChimp
         $this
             ->mailChimp
                 ->patch(
@@ -152,7 +149,6 @@ class MemberService
         $this->entityManager->remove($member);
         $this->entityManager->flush();
 
-        // Remove list member from MailChimp
         $this->mailChimp->delete(sprintf('lists/%s/members/%s', $mailChimpId, $emailHash));
     }
 }

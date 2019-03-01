@@ -43,11 +43,10 @@ class MemberController extends Controller
      */
     public function create(Request $request, string $mailChimpId): JsonResponse
     {
-        // Validate data
         $validator = $this->getValidationFactory()->make($request->all(), MailChimpMember::getValidationRules());
 
         if ($validator->fails()) {
-            // Return error response if validation failed
+
             return $this->errorResponse([
                 'message' => 'Invalid data given',
                 'errors' => $validator->errors()->toArray()
@@ -57,7 +56,7 @@ class MemberController extends Controller
         try {
             $result = $this->memberService->create($request->all(), $mailChimpId);
         } catch (Exception $exception) {
-            // Return error response if something goes wrong
+
             return $this->errorResponse(['message' => $exception->getMessage()]);
         }
 
@@ -91,11 +90,10 @@ class MemberController extends Controller
      */
     public function update(Request $request, string $mailChimpId, string $memberId): JsonResponse
     {
-        // Validate data
         $validator = $this->getValidationFactory()->make($request->all(), MailChimpMember::getValidationRules());
 
         if ($validator->fails()) {
-            // Return error response if validation failed
+
             return $this->errorResponse([
                 'message' => 'Invalid data given',
                 'errors' => $validator->errors()->toArray()
