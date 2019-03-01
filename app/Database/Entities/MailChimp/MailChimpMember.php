@@ -119,6 +119,13 @@ class MailChimpMember extends MailChimpEntity
     private $tags;
 
     /**
+     * @var MailChimpList
+     *
+     * @ORM\ManyToOne(targetEntity="MailChimpList", inversedBy="members")
+     */
+    private $list;
+
+    /**
      * Get validation rules for mailchimp entity.
      *
      * @return array
@@ -434,6 +441,25 @@ class MailChimpMember extends MailChimpEntity
     public function setTags(array $tags): MailChimpMember
     {
         $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @return null|MailChimpList
+     */
+    public function getList(): ?MailChimpList
+    {
+        return $this->list;
+    }
+
+    /**
+     * @param MailChimpList $list
+     * @return MailChimpMember
+     */
+    public function setList(MailChimpList $list): MailChimpMember
+    {
+        $this->list = $list;
 
         return $this;
     }

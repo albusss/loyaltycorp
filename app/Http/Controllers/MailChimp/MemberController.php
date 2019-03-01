@@ -38,10 +38,10 @@ class MemberController extends Controller
      * Create MailChimp list.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string $listId
+     * @param string $mailChimpId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request, string $listId): JsonResponse
+    public function create(Request $request, string $mailChimpId): JsonResponse
     {
         // Validate data
         $validator = $this->getValidationFactory()->make($request->all(), MailChimpMember::getValidationRules());
@@ -55,9 +55,26 @@ class MemberController extends Controller
         }
 
         try {
-            $result = $this->memberService->create($request->all(), $listId);
+            $result = $this->memberService->create($request->all(), $mailChimpId);
         } catch (Exception $exception) {
             // Return error response if something goes wrong
+            return $this->errorResponse(['message' => $exception->getMessage()]);
+        }
+
+        return $this->successfulResponse($result);
+    }
+
+    /**
+     * Retrieve and return MailChimp list.
+     *
+     * @param string $mailChimpId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $mailChimpId): JsonResponse
+    {
+        try {
+            $result = $this->memberService->show($mailChimpId);
+        } catch (Exception $exception) {
             return $this->errorResponse(['message' => $exception->getMessage()]);
         }
 
